@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      NEXT_PUBLIC_OLLAMA_URL: ${OLLAMA_URL}
+      NEXT_PUBLIC_N8N_WEBHOOK: ${N8N_WEBHOOK_URL}
+      DATABASE_URL: ${DATABASE_URL}
