@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A restaurant with seating capacity
+model Restaurant {
+  id        String   @id @default(uuid())
+  name      String
+  tz        String
+  seatsTotal Int
+  reservations Reservation[]
+  waitlist    Waitlist[]
+}
+
+/// A customer making reservations
+model Customer {
+  id             String   @id @default(uuid())
+  name           String
+  phone          String   @unique
+  email          String?  @unique
+  dietaryPrefs   String?
+  reservations   Reservation[]
+  waitlists      Waitlist[]
+}
+
+/// A reservation entry
+model Reservation {
+  id           String   @id @default(uuid())
+  restaurantId String
+  customerId   String
+  status       String   @default("pending") // pending | confirmed | cancelled
+  partySize    Int
+  tsStart      DateTime
+  tsEnd        DateTime
+  specialRequest String?
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  Customer     Customer   @relation(fields: [customerId], references: [id])
+}
+
+/// Waitlist entry
+model Waitlist {
+  id           String   @id @default(uuid())
+  restaurantId String
+  customerId   String
+  desiredSlot  DateTime
+  createdAt    DateTime @default(now())
+  Restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  Customer     Customer   @relation(fields: [customerId], references: [id])
+}

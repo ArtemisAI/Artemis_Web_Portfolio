@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Users of the content studio
+model User {
+  id         String    @id @default(uuid())
+  email      String    @unique
+  name       String?
+  createdAt  DateTime  @default(now())
+  contents   Content[]
+  templates  Template[]
+}
+
+/// Content drafts and published items
+model Content {
+  id          String     @id @default(uuid())
+  ownerId     String
+  title       String
+  body        String
+  channel     String
+  status      String     @default("draft") // draft | scheduled | published
+  scheduledAt DateTime?
+  parentId    String?    // previous version
+  createdAt   DateTime   @default(now())
+  owner       User       @relation(fields: [ownerId], references: [id])
+  parent      Content?   @relation("Version", fields: [parentId], references: [id])
+  children    Content[]  @relation("Version")
+  schedules   Schedule[]
+}
+
+/// Saved templates for consistent structure
+model Template {
+  id       String   @id @default(uuid())
+  ownerId  String
+  name     String
+  json     Json
+  channel  String
+  User     User     @relation(fields: [ownerId], references: [id])
+}
+
+/// Scheduled jobs reference for n8n
+model Schedule {
+  id         String    @id @default(uuid())
+  contentId  String
+  jobId      String
+  nextRun    DateTime
+  content    Content   @relation(fields: [contentId], references: [id])
+}
