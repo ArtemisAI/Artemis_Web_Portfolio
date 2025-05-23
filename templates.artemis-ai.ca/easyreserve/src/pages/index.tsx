@@ -1,10 +1,12 @@
-import ReservationWidget from '../../components/ReservationWidget';
+import ReservationWidget from '../components/ReservationWidget';
 
 export default function Home() {
   return (
-    <main>
-      <h1>EasyReserve Template</h1>
-      <ReservationWidget />
+    <main style={{ padding: '2rem', fontFamily: 'sans-serif' }}>
+      <h1>EasyReserve Reservation Template</h1>
+      <section style={{ marginTop: '2rem' }}>
+        <ReservationWidget />
+      </section>
     </main>
   );
 }
