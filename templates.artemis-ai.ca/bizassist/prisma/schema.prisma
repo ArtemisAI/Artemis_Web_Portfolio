@@ -13,6 +13,8 @@ model User {
   email       String   @unique
   name        String?
   role        String   // e.g., "admin", "staff"
+  tenant_id   String   // Added
+  password_hash String // Added
   createdAt   DateTime @default(now())
   conversations Conversation[]
   messages     Message[]
@@ -21,8 +23,10 @@ model User {
 // Sales record for KPI
 model Sale {
   id        String   @id @default(uuid())
-  tenantId  String
+  tenantId  String   // Renamed from tenant_id to match original schema if this was a typo, or keep if intentional
   amount    Float
+  product_id String  // Added
+  channel    String  // Added
   date      DateTime @default(now())
 }
 
@@ -51,6 +55,9 @@ model Message {
   conversationId String
   role           String    // "user" or "assistant"
   content        String
+  tokens         Int?      // Added
   createdAt      DateTime  @default(now())
+  userId         String?   // Optional: if messages can exist without a user
+  User           User?     @relation(fields: [userId], references: [id])
   Conversation   Conversation @relation(fields: [conversationId], references: [id])
 }

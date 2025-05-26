@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Patient {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  phone         String?
+  name          String
+  createdAt     DateTime  @default(now())
+  conversations Conversation[]
+  appointments  Appointment[]
+}
+
+model Appointment {
+  id        String    @id @default(uuid())
+  patientId String
+  status    String    // e.g., "pending", "confirmed", "cancelled"
+  startsAt  DateTime
+  endsAt    DateTime
+  reason    String?
+  patient   Patient   @relation(fields: [patientId], references: [id])
+}
+
+model Conversation {
+  id        String    @id @default(uuid())
+  patientId String
+  messages  Message[]
+  patient   Patient   @relation(fields: [patientId], references: [id])
+}
+
+model Message {
+  id        String    @id @default(uuid())
+  convId    String
+  role      String    // e.g., "system", "user", "assistant"
+  content   String    @db.Text // Use Text for potentially long content
+  vector    Float[]   // For pgvector. Requires pgvector extension in PostgreSQL.
+                      // See: https://github.com/pgvector/pgvector
+  createdAt DateTime  @default(now())
+  conversation Conversation @relation(fields: [convId], references: [id])
+}
+
+model Staff {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  name          String?
+  role          String    // e.g., "doctor", "admin"
+  password_hash String
+  createdAt     DateTime  @default(now())
+}
+
+model FAQ {
+  id        String    @id @default(uuid())
+  question  String    @db.Text
+  answer    String    @db.Text
+  category  String?
+}

@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * TODO:
  * - Display business KPIs with charts

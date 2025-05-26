@@ -11,12 +11,19 @@ async function main() {
       email: 'user@example.com',
       name: 'Jane Doe',
       role: 'admin',
+      tenant_id: 'tenant_placeholder_123', // Added
+      password_hash: 'hash_placeholder_xyz', // Added
     },
   });
 
   // Create sample sale
   await prisma.sale.create({
-    data: { tenantId: user.id, amount: 1234.56 },
+    data: { 
+      tenantId: user.tenant_id, // Using tenant_id from user
+      amount: 1234.56,
+      product_id: 'product_placeholder_abc', // Added
+      channel: 'online', // Added
+    },
   });
 
   // Create sample task
@@ -31,14 +38,14 @@ async function main() {
       userId: user.id,
       messages: {
         create: [
-          { role: 'user', content: 'Hello, BizAssist!' },
-          { role: 'assistant', content: 'Welcome! How can I help today?' },
+          { role: 'user', content: 'Hello, BizAssist!', tokens: 5 }, // Added tokens
+          { role: 'assistant', content: 'Welcome! How can I help today?', tokens: 8 }, // Added tokens
         ],
       },
     },
   });
 
-  console.log('Seed completed:', { userId: user.id, saleId: conv.id });
+  console.log('Seed completed:', { userId: user.id, conversationId: conv.id }); // Corrected log key
 }
 
 main()

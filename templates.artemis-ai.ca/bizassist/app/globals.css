@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Global styles and CSS reset */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+@layer base {
+  body {
+    @apply font-sans;
+    background-color: hsl(var(--background)); /* Using shadcn/ui background */
+    color: hsl(var(--foreground)); /* Using shadcn/ui foreground */
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+html, body {
+  height: 100%;
+}
+a {
+  @apply text-primary hover:text-primary/80; /* Using primary color from tailwind config */
+  text-decoration: none;
+}
+/* Removed main and button default styles as they will be handled by components or utilities */
